@@ -63,6 +63,24 @@ class orders:
                     "Buy-OrderID": bestprice2.orderID
                 }
                 executions.append(execution)
-
+                self.execution_id+=1
+                order.Quantity -= quantity
+                bestprice2.Quantity -= quantity
+                if bestprice2.Quantity >= 0:
+                    self.buy_orders.insert(0,bestprice2)
+                if order.Quantity == 0:
+                    break
+            # if order is unsatisfied
+            if order.Quantity > 0:
+                position = 0
+                while position < len(self.sell_orders):
+                    exisitingOrder = self.sell_orders[position]
+                    if order.Price < exisitingOrder:
+                        # lowest sell price gets priority
+                        break
+                    # move past same price orders since time gets priority in that case
+                    position+= 1
+                self.sell_orders.insert(position, order)
+        return executions
 
 
